@@ -34,11 +34,11 @@ module Iro
       end
 
       def parser_event?
-        type =~ /\A@/
+        type !~ /\A@/
       end
 
       def scanner_event?
-        type !~ /\A@/
+        type =~ /\A@/
       end
 
       Ripper::SCANNER_EVENTS.each do |e|

@@ -41,19 +41,19 @@ class TestIroRipperWrapper < Minitest::Test
 
   # XXX: Is it correct?
   def test_parser_event?
-    sexp = expr("1")
+    sexp = expr("foo.bar")
     assert sexp.parser_event?
 
-    sexp = expr("foo.bar")
+    sexp = expr("1")
     refute sexp.parser_event?
   end
 
   # XXX: Is it correct?
   def test_scanner_event?
-    sexp = expr("foo.bar")
+    sexp = expr("1")
     assert sexp.scanner_event?
 
-    sexp = expr("1")
+    sexp = expr("foo.bar")
     refute sexp.scanner_event?
   end
 
