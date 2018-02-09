@@ -34,4 +34,29 @@ class TestIroRubyParser < Minitest::Test
       tokens
     )
   end
+
+  def test_tokens_kw
+    tokens = parse(<<~RUBY)
+      if foo
+      end
+    RUBY
+    assert_equal(
+      {
+        "Keyword" => [[1, 1, 2], [2, 1, 3]]
+      },
+      tokens
+    )
+
+    tokens = parse(<<~RUBY)
+      def foo
+      end
+    RUBY
+    assert_equal(
+      {
+        "rubyDefine" => [[1, 1, 3]],
+        "Keyword" => [[2, 1, 3]]
+      },
+      tokens
+    )
+  end
 end

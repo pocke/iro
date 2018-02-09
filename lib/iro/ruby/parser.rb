@@ -9,7 +9,6 @@ module Iro
         int: 'Number',
         float: 'Float',
         
-        kw: 'Keyword',
         comment: 'Comment',
         embdoc: 'Comment',
         embdoc_beg: 'Comment',
@@ -50,6 +49,17 @@ module Iro
             super
           end
         RUBY
+      end
+
+      def on_kw(str)
+        group =
+          case str
+          when 'def', 'alias'
+            'rubyDefine'
+          else
+            'Keyword'
+          end
+        register_token group, [lineno, column+1, str.size]
       end
 
       def traverse(node)
