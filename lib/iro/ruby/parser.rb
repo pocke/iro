@@ -52,14 +52,15 @@ module Iro
       end
 
       def on_kw(str)
-        group =
-          case str
-          when 'def', 'alias'
-            'rubyDefine'
-          else
-            'Keyword'
-          end
+        group = kw_group(str)
         register_token group, [lineno, column+1, str.size]
+      end
+
+      def kw_group(str)
+        {
+          'def' => 'rubyDefine',
+          'alias' => 'rubyDefine',
+        }[str] || 'Keyword'
       end
 
       def traverse(node)
