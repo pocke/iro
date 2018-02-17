@@ -11,6 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{}
   spec.description   = %q{}
   spec.homepage      = "https://github.com/pocke/iro"
+  spec.license       = 'Apache-2.0'
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
