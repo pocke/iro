@@ -23,6 +23,7 @@ module Iro
         tstring_end: 'Delimiter',
         embexpr_beg: 'Delimiter',
         embexpr_end: 'Delimiter',
+        backtick: 'Delimiter',
       }.freeze
 
       attr_reader :tokens
