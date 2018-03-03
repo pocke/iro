@@ -19,6 +19,20 @@ class TestIroRubyParser < Minitest::Test
     )
   end
 
+  def test_tokens_backtick
+    tokens = parse(<<~RUBY)
+      `ls -a`
+    RUBY
+
+    assert_equal(
+      {
+        'Delimiter' => [[1,1,1], [1,7,1]],
+        'String' => [[1,2,5]]
+      },
+      tokens
+    )
+  end
+
   def test_tokens_lvar
     tokens = parse(<<~RUBY)
       p x
