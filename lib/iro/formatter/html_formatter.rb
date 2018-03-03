@@ -20,6 +20,10 @@ module Iro
         formatter.format
       end
 
+      def self.sample_stylesheet
+        File.join(__dir__, 'sample.css')
+      end
+
       def initialize(source:, highlight:, prefix:)
         @source = source.each_line.map(&:chomp)
         @highlight = sort_highlight_by_position(highlight)
