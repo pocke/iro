@@ -1,3 +1,5 @@
+require 'sanitize'
+
 require 'minitest'
 require 'minitest/autorun'
 
