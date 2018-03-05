@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["kuwabara@pocke.me"]
 
   spec.summary       = %q{A library for syntax highlighter}
-  spec.description   = %q{A library for syntax highlighter}
+  spec.description   = %q{A library for syntax highlighter. It is based Ripper.}
   spec.homepage      = "https://github.com/pocke/iro"
   spec.license       = 'Apache-2.0'
 
