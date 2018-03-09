@@ -55,6 +55,7 @@ module Iro
       def on_kw(str)
         group = kw_group(str)
         register_token group, [lineno, column+1, str.size]
+        super
       end
 
       def kw_group(str)
@@ -65,6 +66,15 @@ module Iro
       end
 
       def traverse(node)
+        if node.kw_type?
+          str = node.content
+          t = node.position + [str.size]
+          t[1] += 1
+          @tokens[kw_group(str)]&.reject! do |token|
+            token == t
+          end
+        end
+
         return if node.scanner_event?
 
         if node.var_ref_type?
