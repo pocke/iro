@@ -65,6 +65,20 @@ module Iro
         }[str] || 'Keyword'
       end
 
+      def on_def(name, params, body)
+        super.tap do |result|
+          pos = name.position
+          register_token 'rubyFunction', [pos[0], pos[1]+1, name.content.size]
+        end
+      end
+
+      def on_defs(recv, period, name, params, body)
+        super.tap do |result|
+          pos = name.position
+          register_token 'rubyFunction', [pos[0], pos[1]+1, name.content.size]
+        end
+      end
+
       def traverse(node)
         if node.kw_type?
           str = node.content

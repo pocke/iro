@@ -68,7 +68,23 @@ class TestIroRubyParser < Minitest::Test
     assert_equal(
       {
         "rubyDefine" => [[1, 1, 3]],
-        "Keyword" => [[2, 1, 3]]
+        "Keyword" => [[2, 1, 3]],
+        "rubyFunction" => [[1, 5, 3]],
+      },
+      tokens
+    )
+  end
+
+  def test_defs
+    tokens = parse(<<~RUBY)
+      def self.foo
+      end
+    RUBY
+    assert_equal(
+      {
+        "rubyDefine" => [[1, 1, 3]],
+        "Keyword" => [[2, 1, 3]],
+        "rubyFunction" => [[1, 10, 3]],
       },
       tokens
     )
@@ -82,7 +98,8 @@ class TestIroRubyParser < Minitest::Test
     assert_equal(
       {
         "rubyDefine" => [[1, 1, 3]],
-        "Keyword" => [[2, 1, 3]]
+        "Keyword" => [[2, 1, 3]],
+        "rubyFunction" => [[1, 5, 3]],
       },
       tokens
     )
