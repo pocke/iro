@@ -79,6 +79,14 @@ module Iro
         end
       end
 
+      def on_symbol(ident)
+        super.tap do |result|
+          pos = ident.position
+          register_token 'rubySymbol', [pos[0], pos[1]+1, ident.content.size]
+          register_token 'rubySymbolDelimiter', [pos[0], pos[1], 1]
+        end
+      end
+
       def traverse(node)
         if node.kw_type?
           str = node.content

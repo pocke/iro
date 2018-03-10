@@ -104,4 +104,17 @@ class TestIroRubyParser < Minitest::Test
       tokens
     )
   end
+
+  def test_symbol_literal
+    tokens = parse(<<~RUBY)
+      :foo
+    RUBY
+    assert_equal(
+      {
+        "rubySymbol" => [[1, 2, 3]],
+        "rubySymbolDelimiter" => [[1, 1, 1]]
+      },
+      tokens
+    )
+  end
 end
