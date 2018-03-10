@@ -13,6 +13,7 @@ module Iro
         embdoc: 'Comment',
         embdoc_beg: 'Comment',
         embdoc_end: 'Comment',
+
         const: 'Type',
         
         regexp_beg: 'Delimiter',
@@ -24,6 +25,8 @@ module Iro
         embexpr_beg: 'Delimiter',
         embexpr_end: 'Delimiter',
         backtick: 'Delimiter',
+
+        symbeg: 'rubySymbolDelimiter',
       }.freeze
 
       attr_reader :tokens
@@ -83,7 +86,6 @@ module Iro
         super.tap do |result|
           pos = ident.position
           register_token 'rubySymbol', [pos[0], pos[1]+1, ident.content.size]
-          register_token 'rubySymbolDelimiter', [pos[0], pos[1], 1]
         end
       end
 
