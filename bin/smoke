@@ -20,7 +20,7 @@ end
 def main(repo, branch = 'master')
   url = "https://github.com/#{repo}/tarball/#{branch}"
   chtmpdir do
-    Tempfile.create do |tar|
+    Tempfile.create(['iro-smoke-test-', '.tar.gz']) do |tar|
       open(url) do |f|
         IO.copy_stream f, tar
       end
