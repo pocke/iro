@@ -75,20 +75,28 @@ module Iro
       end
 
       def on_def(name, params, body)
-        super.tap do |result|
+        super.tap do
           register_scanner_event 'rubyFunction', name
         end
       end
 
       def on_defs(recv, period, name, params, body)
-        super.tap do |result|
+        super.tap do
           register_scanner_event 'rubyFunction', name
         end
       end
 
       def on_symbol(ident)
-        super.tap do |result|
+        super.tap do
           register_scanner_event 'rubySymbol', ident
+        end
+      end
+
+      def on_var_ref(name)
+        super.tap do
+          if name.ident_type?
+            register_scanner_event 'rubyLocalVariable', name
+          end
         end
       end
 
@@ -104,13 +112,6 @@ module Iro
 
         return if node.scanner_event?
 
-        if node.var_ref_type?
-          ident = node.children.first
-          if ident.ident_type?
-            pos = ident.position
-            register_token 'rubyLocalVariable', [pos[0], pos[1]+1, ident.content.size]
-          end
-        end
         node.children.each do |child|
           traverse(child) if child.is_a?(Array)
         end
