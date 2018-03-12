@@ -27,6 +27,10 @@ module Iro
         backtick: 'Delimiter',
 
         symbeg: 'rubySymbolDelimiter',
+
+        ivar: 'rubyInstanceVariable',
+        cvar: 'rubyClassVariable',
+        gvar: 'rubyGlobalVariable',
       }.freeze
 
       attr_reader :tokens
