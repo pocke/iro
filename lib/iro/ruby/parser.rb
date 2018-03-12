@@ -41,6 +41,12 @@ module Iro
         @tokens[group] << token
       end
 
+      # TODO: Maybe multiline support is needed.
+      def register_scanner_event(group, event)
+        pos = event.position
+        register_token group, [pos[0], pos[1]+1, event.content.size]
+      end
+
       EVENT_NAME_TO_HIGHLIGT_NAME.each do |tok_type, group|
         eval <<~RUBY
           def on_#{tok_type}(str)
@@ -70,22 +76,19 @@ module Iro
 
       def on_def(name, params, body)
         super.tap do |result|
-          pos = name.position
-          register_token 'rubyFunction', [pos[0], pos[1]+1, name.content.size]
+          register_scanner_event 'rubyFunction', name
         end
       end
 
       def on_defs(recv, period, name, params, body)
         super.tap do |result|
-          pos = name.position
-          register_token 'rubyFunction', [pos[0], pos[1]+1, name.content.size]
+          register_scanner_event 'rubyFunction', name
         end
       end
 
       def on_symbol(ident)
         super.tap do |result|
-          pos = ident.position
-          register_token 'rubySymbol', [pos[0], pos[1]+1, ident.content.size]
+          register_scanner_event 'rubySymbol', ident
         end
       end
 
