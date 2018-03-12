@@ -156,4 +156,19 @@ class TestIroRubyParser < Minitest::Test
       tokens
     )
   end
+
+  def test_symbol_with_Xvar
+    tokens = parse(<<~RUBY)
+      :$foo
+      :@foo
+      :@@foo
+    RUBY
+    assert_equal(
+      {
+        "rubySymbol" => [[1, 2, 4], [2, 2, 4], [3, 2, 5]],
+        "rubySymbolDelimiter" => [[1, 1, 1], [2, 1, 1], [3, 1, 1]]
+      },
+      tokens.reject { |_, v| v.empty? }
+    )
+  end
 end

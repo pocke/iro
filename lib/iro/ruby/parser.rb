@@ -51,6 +51,17 @@ module Iro
         register_token group, [pos[0], pos[1]+1, event.content.size]
       end
 
+      def unhighlight!(scanner_event)
+        t = scanner_event.type[1..-1].to_sym
+        group = EVENT_NAME_TO_HIGHLIGT_NAME[t] ||
+          (scanner_event.kw_type? && kw_group(scanner_event.content))
+        raise 'bug' unless group
+
+        t = scanner_event.position + [scanner_event.content.size]
+        t[1] += 1
+        @tokens[group].reject! { |ev| ev == t }
+      end
+
       EVENT_NAME_TO_HIGHLIGT_NAME.each do |tok_type, group|
         eval <<~RUBY
           def on_#{tok_type}(str)
@@ -90,9 +101,10 @@ module Iro
         end
       end
 
-      def on_symbol(ident)
+      def on_symbol(node)
         super.tap do
-          register_scanner_event 'rubySymbol', ident
+          unhighlight! node if node.gvar_type? || node.ivar_type? || node.cvar_type?
+          register_scanner_event 'rubySymbol', node
         end
       end
 
@@ -106,12 +118,7 @@ module Iro
 
       def traverse(node)
         if node.kw_type?
-          str = node.content
-          t = node.position + [str.size]
-          t[1] += 1
-          @tokens[kw_group(str)]&.reject! do |token|
-            token == t
-          end
+          unhighlight!(node)
         end
 
         return if node.scanner_event?
