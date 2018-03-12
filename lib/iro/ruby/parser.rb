@@ -8,6 +8,7 @@ module Iro
         CHAR: 'Character',
         int: 'Number',
         float: 'Float',
+        label: 'rubySymbol',
         
         comment: 'Comment',
         embdoc: 'Comment',

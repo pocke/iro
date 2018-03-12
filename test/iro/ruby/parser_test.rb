@@ -33,6 +33,24 @@ class TestIroRubyParser < Minitest::Test
     )
   end
 
+  def test_tokens_label
+    tokens = parse(<<~RUBY)
+      {foo: bar}
+      def a foo: bar
+      end
+    RUBY
+
+    assert_equal(
+      {
+        'rubySymbol' => [[1, 2, 4], [2, 7, 4]],
+        'rubyDefine' => [[2, 1, 3]],
+        'Keyword' => [[3, 1, 3]],
+        'rubyFunction' => [[2, 5, 1]],
+      },
+      tokens
+    )
+  end
+
   def test_tokens_ivar
     tokens = parse(<<~RUBY)
       @foo = a
