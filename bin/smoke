@@ -1,0 +1,45 @@
+#!/usr/bin/env ruby
+
+# Usage: bin/smoke user/repo [branch]
+
+require "bundler/setup"
+require 'open-uri'
+require 'tempfile'
+require 'tmpdir'
+require 'pathname'
+require 'iro'
+
+def sh!(*cmd)
+  puts cmd.join(' ')
+  system(*cmd)
+  unless $?.success?
+    raise "ERROR: #{cmd.join(' ')}"
+  end
+end
+
+def main(repo, branch = 'master')
+  url = "https://github.com/#{repo}/tarball/#{branch}"
+  chtmpdir do
+    Tempfile.create(['iro-smoke-test-', '.tar.gz']) do |tar|
+      open(url) do |f|
+        IO.copy_stream f, tar
+      end
+      sh! 'tar', 'zxvf', tar.path
+      Pathname.glob('**/*.rb').each do |f|
+        print "checking: #{f}"
+        Iro::Ruby::Parser.tokens(f.read)
+        puts "\t\tOK🎉"
+      end
+    end
+  end
+end
+
+def chtmpdir
+  Dir.mktmpdir do |dir|
+    Dir.chdir(dir) do
+      yield
+    end
+  end
+end
+
+main(*ARGV)

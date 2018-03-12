@@ -1,5 +1,5 @@
 require 'ripper'
-require 'cgi/escape'
+require 'cgi/util'
 
 require "iro/version"
 require 'iro/ripper_wrapper'
