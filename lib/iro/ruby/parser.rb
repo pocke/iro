@@ -8,7 +8,6 @@ module Iro
         CHAR: 'Character',
         int: 'Number',
         float: 'Float',
-        label: 'rubySymbol',
         
         comment: 'Comment',
         embdoc: 'Comment',
@@ -80,6 +79,14 @@ module Iro
       def on_kw(str)
         group = kw_group(str)
         register_token group, [lineno, column+1, str.size]
+        super
+      end
+
+      # foo: bar
+      # ^^^ rubySymbol
+      #    ^ no highlight
+      def on_label(str)
+        register_token 'rubySymbol', [lineno, column+1, str.size-1]
         super
       end
 
