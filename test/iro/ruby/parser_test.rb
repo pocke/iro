@@ -31,7 +31,7 @@ class TestIroRubyParser < Minitest::Test
   def test_tokens_label
     assert_parse(
       {
-        'rubySymbol' => [[1, 2, 4], [2, 7, 4]],
+        'rubySymbol' => [[1, 2, 3], [2, 7, 3]],
         'rubyDefine' => [[2, 1, 3]],
         'Keyword' => [[3, 1, 3]],
         'rubyFunction' => [[2, 5, 1]],
