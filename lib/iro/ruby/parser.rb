@@ -14,8 +14,6 @@ module Iro
         embdoc_beg: 'Comment',
         embdoc_end: 'Comment',
 
-        const: 'Type',
-        
         regexp_beg: 'Delimiter',
         regexp_end: 'Delimiter',
         heredoc_beg: 'Delimiter',
@@ -118,9 +116,30 @@ module Iro
 
       def on_var_ref(name)
         super.tap do
-          if name.ident_type?
+          case name.type
+          when :@ident
             register_scanner_event 'rubyLocalVariable', name
+          when :@const
+            register_scanner_event 'Type', name
           end
+        end
+      end
+
+      def on_var_field(name)
+        super.tap do
+          register_scanner_event 'Type', name if name.const_type?
+        end
+      end
+
+      def on_top_const_ref(name)
+        super.tap do
+          register_scanner_event 'Type', name
+        end
+      end
+
+      def on_const_path_ref(_base, name)
+        super.tap do
+          register_scanner_event 'Type', name
         end
       end
 

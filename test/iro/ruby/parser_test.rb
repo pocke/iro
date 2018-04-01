@@ -1,9 +1,11 @@
 require 'test_helper'
 
 class TestIroRubyParser < Minitest::Test
+  include UnificationAssertion
+
   def assert_parse(expected, source)
     got = Iro::Ruby::Parser.tokens(source)
-    assert_equal(expected, got)
+    assert_unifiable(expected, got)
   end
 
   def test_tokens_string
@@ -161,6 +163,28 @@ class TestIroRubyParser < Minitest::Test
         :$foo
         :@foo
         :@@foo
+      RUBY
+    )
+  end
+
+  def test_const
+    assert_parse(
+      {
+        "Type" => [[1, 1, 3], [2, 3, 3], [3, 5, 3], [4, 3, 3], [4, 8, 3]],
+        "rubySymbol" => :_,
+        "Keyword" => :_,
+        "rubyDefine" => :_,
+        "rubyFunction" => :_,
+        "rubySymbolDelimiter" => :_,
+      }, <<~RUBY
+        Foo = _
+        p Foo
+        p ::Foo
+        p Foo::Bar
+
+        p :Foo
+        Foo()
+        def Foo() end
       RUBY
     )
   end
