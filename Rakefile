@@ -28,7 +28,7 @@ namespace :bump do
     re = /VERSION\s*=\s*['"](.+)['"]/
 
     content = File.read(file)
-    version = content[re, 1].split('.')
+    version = content[re, 1].split('.').map(&:to_i)
     case level
     when :patch
       version[2] += 1
@@ -42,7 +42,7 @@ namespace :bump do
     else
       raise "Unknown level: #{level}"
     end
-    v = version.join('.')
+    v = version.map(&:to_s).join('.')
     content[re, 1] = v
     File.write(file, content)
 
