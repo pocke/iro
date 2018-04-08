@@ -49,6 +49,7 @@ namespace :bump do
     sh 'git', 'commit', '-am', "Bump up version to #{v}"
     sh 'git', 'tag', "v#{v}"
     sh 'git', 'push', "origin", 'HEAD:master', '--tags'
+    Rake::Task['build'].invoke
     Rake::Task['release:rubygem_push'].invoke
   end
 
