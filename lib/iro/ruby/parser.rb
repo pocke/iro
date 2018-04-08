@@ -136,6 +136,7 @@ module Iro
           register_scanner_event 'Type', name
         end
       end
+      alias on_const_ref on_top_const_ref
 
       def on_const_path_ref(_base, name)
         super.tap do

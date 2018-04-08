@@ -170,7 +170,8 @@ class TestIroRubyParser < Minitest::Test
   def test_const
     assert_parse(
       {
-        "Type" => [[1, 1, 3], [2, 3, 3], [3, 5, 3], [4, 3, 3], [4, 8, 3]],
+        "Type" => [[1, 1, 3], [2, 3, 3], [3, 5, 3], [4, 3, 3], [4, 8, 3],
+                   [6, 7, 1], [8, 8, 3], [10, 7, 3], [10, 13, 3], [12, 7, 3], [12, 12, 6]],
         "rubySymbol" => :_,
         "Keyword" => :_,
         "rubyDefine" => :_,
@@ -181,6 +182,15 @@ class TestIroRubyParser < Minitest::Test
         p Foo
         p ::Foo
         p Foo::Bar
+
+        class A
+        end
+        module Abc
+        end
+        class Foo < Bar
+        end
+        class Foo::FooBar
+        end
 
         p :Foo
         Foo()
