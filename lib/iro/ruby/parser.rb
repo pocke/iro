@@ -1,5 +1,14 @@
 module Iro
   module Ruby
+    class Base < Ripper::SexpBuilderPP
+      Ripper::SCANNER_EVENT.each do |e|
+        define_method(:"on_#{e}") do |str|
+          check_lineno!
+          super
+        end
+      end
+    end
+
     class Parser < Ripper::SexpBuilderPP
       using RipperWrapper
 
@@ -33,9 +42,14 @@ module Iro
 
       attr_reader :tokens
 
-      def initialize(*)
-        super
+      def initialize(source, range:)
+        super(source)
         @tokens = {}
+        @range = range
+      end
+
+      def check_lineno!
+        if @range && !@range.cover?(lineno)
       end
 
       def register_token(group, token)
@@ -156,8 +170,8 @@ module Iro
         end
       end
 
-      def self.tokens(source)
-        parser = self.new(source)
+      def self.tokens(source, range: nil)
+        parser = self.new(source, range: range)
         sexp = parser.parse
         parser.traverse(sexp) unless parser.error?
         parser.tokens
