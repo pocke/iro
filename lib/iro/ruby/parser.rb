@@ -97,19 +97,21 @@ module Iro
 
       def on_def(name, params, body)
         super.tap do
+          unhighlight! name if name.kw_type?
           register_scanner_event 'rubyFunction', name
         end
       end
 
       def on_defs(recv, period, name, params, body)
         super.tap do
+          unhighlight! name if name.kw_type?
           register_scanner_event 'rubyFunction', name
         end
       end
 
       def on_symbol(node)
         super.tap do
-          unhighlight! node if node.gvar_type? || node.ivar_type? || node.cvar_type?
+          unhighlight! node if node.gvar_type? || node.ivar_type? || node.cvar_type? || node.kw_type?
           register_scanner_event 'rubySymbol', node
         end
       end
@@ -144,22 +146,9 @@ module Iro
         end
       end
 
-      def traverse(node)
-        if node.kw_type?
-          unhighlight!(node)
-        end
-
-        return if node.scanner_event?
-
-        node.children.each do |child|
-          traverse(child) if child.is_a?(Array)
-        end
-      end
-
       def self.tokens(source)
         parser = self.new(source)
-        sexp = parser.parse
-        parser.traverse(sexp) unless parser.error?
+        parser.parse
         parser.tokens
       end
     end
