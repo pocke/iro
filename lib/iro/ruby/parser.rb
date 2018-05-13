@@ -1,6 +1,16 @@
 module Iro
   module Ruby
-    class Parser < Ripper::SexpBuilderPP
+    class Base < Ripper
+      Ripper::SCANNER_EVENTS.each do |event|
+        module_eval(<<-End, __FILE__, __LINE__ + 1)
+          def on_#{event}(tok)
+            [:@#{event}, tok, [lineno(), column()]]
+          end
+        End
+      end
+    end
+
+    class Parser < Base
       using RipperWrapper
 
       EVENT_NAME_TO_HIGHLIGT_NAME = {
@@ -96,54 +106,47 @@ module Iro
       end
 
       def on_def(name, params, body)
-        super.tap do
-          unhighlight! name if name.kw_type?
-          register_scanner_event 'rubyFunction', name
-        end
+        unhighlight! name if name.kw_type?
+        register_scanner_event 'rubyFunction', name
+        nil
       end
 
       def on_defs(recv, period, name, params, body)
-        super.tap do
-          unhighlight! name if name.kw_type?
-          register_scanner_event 'rubyFunction', name
-        end
+        unhighlight! name if name.kw_type?
+        register_scanner_event 'rubyFunction', name
+        nil
       end
 
       def on_symbol(node)
-        super.tap do
-          unhighlight! node if node.gvar_type? || node.ivar_type? || node.cvar_type? || node.kw_type?
-          register_scanner_event 'rubySymbol', node
-        end
+        unhighlight! node if node.gvar_type? || node.ivar_type? || node.cvar_type? || node.kw_type?
+        register_scanner_event 'rubySymbol', node
+        nil
       end
 
       def on_var_ref(name)
-        super.tap do
-          case name.type
-          when :@ident
-            register_scanner_event 'rubyLocalVariable', name
-          when :@const
-            register_scanner_event 'Type', name
-          end
+        case name.type
+        when :@ident
+          register_scanner_event 'rubyLocalVariable', name
+        when :@const
+          register_scanner_event 'Type', name
         end
+        nil
       end
 
       def on_var_field(name)
-        super.tap do
-          register_scanner_event 'Type', name if name.const_type?
-        end
+        register_scanner_event 'Type', name if name.const_type?
+        nil
       end
 
       def on_top_const_ref(name)
-        super.tap do
-          register_scanner_event 'Type', name
-        end
+        register_scanner_event 'Type', name
+        nil
       end
       alias on_const_ref on_top_const_ref
 
       def on_const_path_ref(_base, name)
-        super.tap do
-          register_scanner_event 'Type', name
-        end
+        register_scanner_event 'Type', name
+        nil
       end
 
       def self.tokens(source)
