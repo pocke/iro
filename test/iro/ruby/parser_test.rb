@@ -117,7 +117,7 @@ class TestIroRubyParser < Minitest::Test
     assert_parse(
       {
         "rubyDefine" => [[1, 1, 3]],
-        "Keyword" => [[2, 1, 3]],
+        "Keyword" => [[1, 5, 4], [2, 1, 3]],
         "rubyFunction" => [[1, 10, 3]],
       }, <<~RUBY
         def self.foo
