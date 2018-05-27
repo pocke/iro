@@ -113,6 +113,17 @@ class TestIroRubyParser < Minitest::Test
     )
   end
 
+  def test_boolean
+    assert_parse(
+      {
+        'Keyword' => [[1, 1, 4], [2, 1, 5]],
+      }, <<~RUBY
+        true
+        false
+      RUBY
+    )
+  end
+
   def test_defs
     assert_parse(
       {
