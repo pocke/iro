@@ -149,6 +149,25 @@ module Iro
         nil
       end
 
+      def on_fcall(ident)
+        highlight_keyword_like_method(ident)
+      end
+
+      def on_command(ident, _)
+        highlight_keyword_like_method(ident)
+      end
+
+      def highlight_keyword_like_method(ident)
+        case ident.content
+        when 'private', 'public', 'protected', 'private_class_method',
+             'attr_reader', 'attr_writer', 'attr_accessor', 'attr',
+             'include', 'extend', 'prepend', 'module_function', 'refine', 'using',
+             'raise', 'fail', 'catch', 'throw',
+             'require', 'require_relative'
+          register_scanner_event 'Keyword', ident # TODO: Change highlight group
+        end
+      end
+
       def self.tokens(source)
         parser = self.new(source)
         parser.parse
