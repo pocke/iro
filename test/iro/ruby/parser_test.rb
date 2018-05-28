@@ -209,4 +209,16 @@ class TestIroRubyParser < Minitest::Test
       RUBY
     )
   end
+
+  def test_keyword_like_method
+    assert_parse(
+      {
+        "Keyword" => [[1, 1, 7], [2, 1, 7]]
+      }, <<~RUBY
+        private foo
+        private(foo)
+        bar.private(foo)
+      RUBY
+    )
+  end
 end
