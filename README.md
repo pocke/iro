@@ -1,8 +1,6 @@
 # Iro
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/iro`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Iro is a library for syntax highlighting.
 
 ## Installation
 
@@ -22,7 +20,8 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+If you are a Vim user, you can use [Iro.vim](https://github.com/pocke/iro.vim).
+And we have a DEMO web page. http://ruby-highlight.herokuapp.com/
 
 ## Development
 
