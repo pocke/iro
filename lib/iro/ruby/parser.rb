@@ -153,6 +153,10 @@ module Iro
         highlight_keyword_like_method(ident)
       end
 
+      def on_vcall(ident)
+        highlight_keyword_like_method(ident)
+      end
+
       def on_command(ident, _)
         highlight_keyword_like_method(ident)
       end
