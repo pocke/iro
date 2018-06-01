@@ -5,6 +5,9 @@ class TestIroRubyParser < Minitest::Test
 
   def assert_parse(expected, source)
     got = Iro::Ruby::Parser.tokens(source)
+    got.each do |_key, value|
+      value.sort!
+    end
     assert_unifiable(expected, got)
   end
 
@@ -34,8 +37,7 @@ class TestIroRubyParser < Minitest::Test
     assert_parse(
       {
         'rubySymbol' => [[1, 2, 3], [2, 7, 3]],
-        'rubyDefine' => [[2, 1, 3]],
-        'Keyword' => [[3, 1, 3]],
+        'rubyDefine' => [[2, 1, 3], [3, 1, 3]],
         'rubyFunction' => [[2, 5, 1]],
       }, <<~RUBY
         {foo: bar}
@@ -103,8 +105,7 @@ class TestIroRubyParser < Minitest::Test
 
     assert_parse(
       {
-        "rubyDefine" => [[1, 1, 3]],
-        "Keyword" => [[2, 1, 3]],
+        "rubyDefine" => [[1, 1, 3], [2, 1, 3]],
         "rubyFunction" => [[1, 5, 3]],
       }, <<~RUBY
         def foo
@@ -127,8 +128,8 @@ class TestIroRubyParser < Minitest::Test
   def test_defs
     assert_parse(
       {
-        "rubyDefine" => [[1, 1, 3]],
-        "Keyword" => [[1, 5, 4], [2, 1, 3]],
+        "rubyDefine" => [[1, 1, 3], [2, 1, 3]],
+        "Keyword" => [[1, 5, 4]],
         "rubyFunction" => [[1, 10, 3]],
       }, <<~RUBY
         def self.foo
@@ -140,8 +141,7 @@ class TestIroRubyParser < Minitest::Test
   def test_def_def
     assert_parse(
       {
-        "rubyDefine" => [[1, 1, 3]],
-        "Keyword" => [[2, 1, 3]],
+        "rubyDefine" => [[1, 1, 3], [2, 1, 3]],
         "rubyFunction" => [[1, 5, 3]],
       }, <<~RUBY
         def def
@@ -219,6 +219,89 @@ class TestIroRubyParser < Minitest::Test
         public(foo)
         raise
         bar.private(foo)
+      RUBY
+    )
+  end
+
+  def test_end
+    assert_parse(
+      {
+        'Keyword' => [
+          [1, 1, 5], # class
+          [2, 3, 6], [2, 13, 3], # module end
+          [4, 5, 5], # begin
+          [6, 5, 3], # end
+          [8, 9, 2], # do
+          [9, 5, 3], # end
+          [11, 5, 3], [11, 11, 2], [11, 16, 2], # for in do
+          [12, 5, 3], # end
+          [13, 5, 3], [13, 11, 2], # for in
+          [14, 5, 3], # end
+          [16, 5, 5], [16, 13, 2], # while do
+          [17, 5, 3], # end
+          [18, 7, 5], # while
+          [19, 5, 5], # begin
+          [21, 5, 3], [21, 9, 5], # end while
+          [22, 5, 5], # until
+          [23, 5, 3], # end
+          [24, 7, 5], # until
+          [26, 5, 4], # case
+          [27, 5, 4], # when
+          [28, 5, 4], # else
+          [29, 5, 3], # end
+          [31, 5, 2], # if
+          [32, 11, 2], # modifier if
+          [33, 7, 6], # unless
+          [34, 13, 6], # modifier unless
+          [35, 7, 3], # end
+          [36, 5, 3], # end
+          [38, 1, 3], # end
+        ],
+        'rubyDefine' => [
+          [3, 3, 3], # def
+          [37, 3, 3] # end
+        ],
+        'Type' => :_,
+        'rubyFunction' => :_,
+      }, <<~RUBY
+        class A
+          module B; end
+          def foo
+            begin
+              foo
+            end
+
+            tap do
+            end
+
+            for _ in a do
+            end
+            for _ in a
+            end
+
+            while c do
+            end
+            a while b
+            begin
+              foo
+            end while c
+            until c
+            end
+            a until c
+
+            case a
+            when b
+            else c
+            end
+
+            if cond
+              baz if bar
+              unless cond
+                foo unless c
+              end
+            end
+          end
+        end
       RUBY
     )
   end
