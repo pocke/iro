@@ -16,6 +16,7 @@ task :smoke do
   sh 'bin/smoke', 'ruby/ruby', 'trunk'
   sh 'bin/smoke', 'gitlabhq/gitlabhq'
   sh 'bin/smoke', 'rails/rails'
+  sh 'bin/smoke', 'discourse/discourse'
 end
 
 namespace :bump do
