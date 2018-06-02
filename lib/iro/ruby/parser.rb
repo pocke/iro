@@ -46,6 +46,14 @@ module Iro
       def initialize(*)
         super
         @tokens = {}
+        @end_stack = []
+      end
+
+      def parse
+        super
+        @end_stack.each do |end_kw|
+          register_scanner_event 'Keyword', end_kw
+        end
       end
 
       def register_token(group, token)
@@ -59,6 +67,10 @@ module Iro
         register_token group, [pos[0], pos[1]+1, event.content.size]
       end
 
+      def highlight_end_as(group)
+        register_scanner_event group, @end_stack.pop
+      end
+
       def unhighlight!(scanner_event)
         t = scanner_event.type[1..-1].to_sym
         group = EVENT_NAME_TO_HIGHLIGT_NAME[t] ||
@@ -68,6 +80,7 @@ module Iro
         t = scanner_event.position + [scanner_event.content.size]
         t[1] += 1
         @tokens[group].reject! { |ev| ev == t }
+        @end_stack.reject!{|e| e == scanner_event} if scanner_event.kw_type? && scanner_event.content == 'end'
       end
 
       EVENT_NAME_TO_HIGHLIGT_NAME.each do |tok_type, group|
@@ -85,9 +98,14 @@ module Iro
       end
 
       def on_kw(str)
-        group = kw_group(str)
-        register_token group, [lineno, column+1, str.size]
-        super
+        super.tap do |result|
+          if str == 'end'
+            @end_stack << result
+          else
+            group = kw_group(str)
+            register_token group, [lineno, column+1, str.size]
+          end
+        end
       end
 
       # foo: bar
@@ -108,12 +126,14 @@ module Iro
       def on_def(name, params, body)
         unhighlight! name if name.kw_type?
         register_scanner_event 'rubyFunction', name
+        highlight_end_as 'rubyDefine'
         nil
       end
 
       def on_defs(recv, period, name, params, body)
         unhighlight! name if name.kw_type?
         register_scanner_event 'rubyFunction', name
+        highlight_end_as 'rubyDefine'
         nil
       end
 
