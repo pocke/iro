@@ -13,6 +13,7 @@ end
 task :smoke do
   sh 'bin/smoke', 'tric/trick2013'
   sh 'bin/smoke', 'tric/trick2015'
+  sh 'bin/smoke', 'tric/trick2018'
   sh 'bin/smoke', 'ruby/ruby', 'trunk'
   sh 'bin/smoke', 'gitlabhq/gitlabhq'
   sh 'bin/smoke', 'rails/rails'
