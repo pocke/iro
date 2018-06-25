@@ -22,6 +22,17 @@ class TestIroRubyParser < Minitest::Test
     )
   end
 
+  def test_tokens_qwords_beg
+    assert_parse(
+      {
+        'Delimiter' => [[1,1,3], [1,7,1]],
+        'String' => [[1,4,3]]
+      }, <<~RUBY
+        %w[foo]
+      RUBY
+    )
+  end
+
   def test_tokens_backtick
     assert_parse(
       {
