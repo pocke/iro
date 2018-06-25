@@ -30,6 +30,8 @@ module Iro
         heredoc_end: 'Delimiter',
         tstring_beg: 'Delimiter',
         tstring_end: 'Delimiter',
+        qwords_beg: 'Delimiter', # For `**%w[**foo]`
+        words_sep: 'Delimiter', # For `%w[foo**]**` in Ruby 2.4 or older
         embexpr_beg: 'Delimiter',
         embexpr_end: 'Delimiter',
         backtick: 'Delimiter',
