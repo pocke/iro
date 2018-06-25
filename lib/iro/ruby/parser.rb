@@ -160,16 +160,13 @@ module Iro
         nil
       end
 
-      def on_top_const_ref(name)
+      def on_top_const_ref(*, name)
         register_scanner_event 'Type', name
         nil
       end
-      alias on_const_ref on_top_const_ref
-
-      def on_const_path_ref(_base, name)
-        register_scanner_event 'Type', name
-        nil
-      end
+      alias on_const_ref        on_top_const_ref
+      alias on_const_path_ref   on_top_const_ref
+      alias on_const_path_field on_top_const_ref
 
       def on_fcall(ident)
         highlight_keyword_like_method(ident)
