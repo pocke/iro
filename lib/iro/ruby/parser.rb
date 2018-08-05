@@ -66,7 +66,7 @@ module Iro
       # TODO: Maybe multiline support is needed.
       def register_scanner_event(group, event)
         pos = event.position
-        register_token group, [pos[0], pos[1]+1, event.content.size]
+        register_token group, [pos[0], pos[1]+1, event.content.bytesize]
       end
 
       def highlight_end_as(group)
@@ -79,7 +79,7 @@ module Iro
           (scanner_event.kw_type? && kw_group(scanner_event.content))
         raise 'bug' unless group
 
-        t = scanner_event.position + [scanner_event.content.size]
+        t = scanner_event.position + [scanner_event.content.bytesize]
         t[1] += 1
         @tokens[group].reject! { |ev| ev == t }
         @end_stack.reject!{|e| e == scanner_event} if scanner_event.kw_type? && scanner_event.content == 'end'
@@ -92,7 +92,7 @@ module Iro
               register_token #{group.inspect}, [
                 lineno + idx,
                 idx == 0 ? column+1 : 1,
-                s.size]
+                s.bytesize]
             end
             super
           end
@@ -105,7 +105,7 @@ module Iro
             @end_stack << result
           else
             group = kw_group(str)
-            register_token group, [lineno, column+1, str.size]
+            register_token group, [lineno, column+1, str.bytesize]
           end
         end
       end
@@ -114,7 +114,7 @@ module Iro
       # ^^^ rubySymbol
       #    ^ no highlight
       def on_label(str)
-        register_token 'rubySymbol', [lineno, column+1, str.size-1]
+        register_token 'rubySymbol', [lineno, column+1, str.bytesize-1]
         super
       end
 

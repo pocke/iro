@@ -318,4 +318,19 @@ class TestIroRubyParser < Minitest::Test
       RUBY
     )
   end
+
+  def test_multibyte
+    assert_parse(
+      {
+        "Delimiter" => :_,
+        "String" => [[1, 2, 15]],
+        "rubyDefine" => :_,
+        "rubyFunction" => [[2, 5, 9]]
+      }, <<~RUBY
+        "あいうえお"
+        def にゃん
+        end
+      RUBY
+    )
+  end
 end
