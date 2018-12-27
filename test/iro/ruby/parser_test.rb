@@ -172,6 +172,17 @@ class TestIroRubyParser < Minitest::Test
     )
   end
 
+  def test_symbol_literal_with_kw
+    assert_parse(
+      {
+        "rubySymbol" => [[1, 2, 3]],
+        "rubySymbolDelimiter" => [[1, 1, 1]]
+      }, <<~RUBY
+      :end
+      RUBY
+    )
+  end
+
   def test_symbol_with_Xvar
     assert_parse(
       {
