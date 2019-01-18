@@ -13,12 +13,12 @@ module Iro
     class Parser < Base
       using RipperWrapper
 
-      EVENT_NAME_TO_HIGHLIGT_NAME = {
+      EVENT_NAME_TO_HIGHLIGHT_NAME = {
         tstring_content: 'String',
         CHAR: 'Character',
         int: 'Number',
         float: 'Float',
-        
+
         comment: 'Comment',
         embdoc: 'Comment',
         embdoc_beg: 'Comment',
@@ -75,7 +75,7 @@ module Iro
 
       def unhighlight!(scanner_event)
         t = scanner_event.type[1..-1].to_sym
-        group = EVENT_NAME_TO_HIGHLIGT_NAME[t] ||
+        group = EVENT_NAME_TO_HIGHLIGHT_NAME[t] ||
           (scanner_event.kw_type? && kw_group(scanner_event.content))
         raise 'bug' unless group
 
@@ -85,7 +85,7 @@ module Iro
         @end_stack.reject!{|e| e == scanner_event} if scanner_event.kw_type? && scanner_event.content == 'end'
       end
 
-      EVENT_NAME_TO_HIGHLIGT_NAME.each do |tok_type, group|
+      EVENT_NAME_TO_HIGHLIGHT_NAME.each do |tok_type, group|
         eval <<~RUBY
           def on_#{tok_type}(str)
             str.split("\\n").each.with_index do |s, idx|
